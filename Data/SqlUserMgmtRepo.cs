@@ -7,9 +7,9 @@ namespace UserMgmt.Data
 {
     public class SqlUserMgmtRepo : IUserMgmtRepo
     {
-        private readonly UserMgmtContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public SqlUserMgmtRepo(UserMgmtContext context)
+        public SqlUserMgmtRepo(ApplicationDbContext context)
         {
             _context = context;
         }
@@ -30,7 +30,7 @@ namespace UserMgmt.Data
             {
                 throw new ArgumentNullException(nameof(user));
             }
-
+            
             _context.AppUsers.Remove(user);
         }
 

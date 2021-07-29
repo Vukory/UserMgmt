@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using UserMgmt.Data;
@@ -49,17 +50,20 @@ namespace UserMgmt.Controllers
         }
 
         //POST api/appusers
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public ActionResult<AppUserReadDto> CreateAppUser(AppUserCreateDto appUserCreateDto)
         {
             var appUserModel = _mapper.Map<AppUser>(appUserCreateDto);
             var username = _service.GetAvailableUsername(appUserModel.FirstName, appUserModel.LastName);
-            appUserModel.Username = username;
+            appUserModel.UserName = username;
             string passwordHash = BCrypt.Net.BCrypt.HashPassword(appUserCreateDto.Password);
             appUserModel.PasswordHash=passwordHash;
+            
             appUserModel.SystemRole=SystemRole.User;
             _repository.CreateAppUser(appUserModel);
             _repository.SaveChanges();
+            
 
             var appUserReadDto = _mapper.Map<AppUserReadDto>(appUserModel);
 
@@ -68,6 +72,7 @@ namespace UserMgmt.Controllers
         }
 
         //PATCH api/appusers/{id}
+        [Authorize(Roles = "Admin")]
         [HttpPatch("{id}")]
         public ActionResult PartialAppUserUpdate(int id, JsonPatchDocument<AppUserUpdateDto> patchDoc)
         {
@@ -95,6 +100,7 @@ namespace UserMgmt.Controllers
         }
 
         //DELETE api/appusers/{id}
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public ActionResult DeleteAppUser(int id)
         {

@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Identity;
 
 namespace UserMgmt.Models
 {
@@ -15,10 +16,10 @@ namespace UserMgmt.Models
         User = 2
     }
 
-    public class AppUser
+    /// https://docs.microsoft.com/en-us/aspnet/core/security/authentication/customize-identity-model?view=aspnetcore-5.0#change-the-primary-key-type
+    /// https://docs.microsoft.com/en-us/aspnet/core/security/authentication/customize-identity-model?view=aspnetcore-5.0#custom-user-data
+    public class AppUser : IdentityUser<int>
     {
-        [Key]
-        public int Id { get; set; }
 
         [Required]
         [MaxLength(250)]
@@ -31,10 +32,6 @@ namespace UserMgmt.Models
 
         [Required]
         public Gender Gender { get; set; }
-
-        public string Username { get; set; }
-
-        public string PasswordHash { get; set; }
 
         public SystemRole SystemRole { get; set; }
     }
